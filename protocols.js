@@ -1083,3 +1083,69 @@ DEFAULT_PROTOCOLS.unshift({
     ],
     tags: ['Timecourse', 'Western Blot', 'Infection', 'Sample pooling']
 });
+
+
+// 제노타이핑 KOD One 프로토콜
+DEFAULT_PROTOCOLS.unshift({
+    id: 'genotyping_kod_one',
+    name: '제노타이핑 PCR (KOD One)',
+    nameEn: 'Genotyping PCR (KOD One Enzyme)',
+    category: 'nucleic',
+    icon: '🧬',
+    description: '조직 샘플에서 gDNA를 추출하여 KOD One 효소로 빠르게 증폭하는 제노타이핑 프로토콜',
+    purpose: '조직 샘플을 NaOH로 빠르게 lysis하여 gDNA를 추출한 후, 증폭 효율이 뛰어난 KOD Mix를 사용하여 목적 유전자의 유전자형(Genotype)을 판별한다.',
+    materials: [
+        { name: '0.1M NaOH', amount: '______ μL' },
+        { name: '1M Tris-HCl', amount: '______ μL' },
+        { name: 'MilliQ Water', amount: '10 μL' },
+        { name: 'KOD Mix', amount: '12.5 μL' },
+        { name: 'Forward Primer (______ μM)', amount: '0.75 μL' },
+        { name: 'Reverse Primer (______ μM)', amount: '0.75 μL' },
+        { name: 'DNA Sample', amount: '1 μL' },
+        { name: 'Safe Shine Blue (염색약)', amount: '2 μL' },
+        { name: 'TAE buffer', amount: '적량' },
+        { name: 'Agarose', amount: '______ %' }
+    ],
+    sections: [
+        {
+            title: 'Phase 1: gDNA 추출 (Lysis)',
+            steps: [
+                '각 조직 샘플 튜브에 0.1M NaOH를 ______ μL 넣는다.',
+                '85°C에서 1시간 동안 heating 한다 (중간인 30분 시점에 한 번 vortexing 수행).',
+                '— Stop Point (-20°C 보관 가능) —',
+                '각 샘플 튜브에 1M Tris-HCl을 ______ μL 넣어서 중화(Neutralization)시킨다.'
+            ]
+        },
+        {
+            title: 'Phase 2: PCR Master Mix 준비 및 반응',
+            steps: [
+                '아래 조성으로 PCR Master Mix를 준비한다 (1 reaction 기준 총 24 μL):',
+                '  - MilliQ: 10 μL',
+                '  - KOD Mix: 12.5 μL (사용 직전 -20°C에서 꺼낼 것)',
+                '  - Forward Primer (______ μM): 0.75 μL',
+                '  - Reverse Primer (______ μM): 0.75 μL',
+                '각 PCR 튜브에 Master Mix를 24 μL씩 분주하고, 추출한 DNA Sample을 1 μL씩 넣는다. (Total 25 μL)',
+                'PCR 기기에서 아래의 사이클로 반응을 진행한다:',
+                '  - Step 1. __________________________________________________',
+                '  - Step 2. __________________________________________________',
+                '  - Step 3. __________________________________________________'
+            ]
+        },
+        {
+            title: 'Phase 3: 아가로스 겔 전기영동 및 분석',
+            steps: [
+                '______ % TAE (w/v) 아가로스 겔을 준비한다. (마커를 고려하여 Large comb 17-well 또는 Small comb 8-well 선택)',
+                'Safe shine blue 2 μL와 PCR Sample 10 μL를 섞어준 뒤, 그 중 10 μL를 취하여 well에 로딩한다. (마커도 10 μL 로딩)',
+                'Full voltage로 ______ 분간 전기영동을 진행한다.',
+                'Amersham quant 등 UV 장비를 사용하여 사진을 찍는다.',
+                '미리 작성해 둔 Gel Map과 비교하여 제노타입 결과를 분석한다.'
+            ]
+        }
+    ],
+    notes: [
+        'KOD Mix는 온도를 타므로, 믹스하기 직전에 -20°C 냉동고에서 꺼내어 사용합니다.',
+        '로딩 맵(Gel Map)을 사전에 명확히 작성하여 샘플 번호가 헷갈리지 않도록 주의합니다.'
+    ],
+    tags: ['Genotyping', 'PCR', 'KOD One', 'Mouse tail']
+});
+
