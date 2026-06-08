@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실험 프로토콜 생성기 | Lab Protocol Generator</title>
+    <meta name="description" content="실험실에서 사용하는 다양한 프로토콜을 자동으로 생성하고 Word 문서로 다운로드하세요.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Animated background -->
+    <div class="bg-animation">
+        <div class="bg-orb bg-orb-1"></div>
+        <div class="bg-orb bg-orb-2"></div>
+        <div class="bg-orb bg-orb-3"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 2v6a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2"/>
+                        <path d="M6 8l-2 8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2l-2-8"/>
+                        <path d="M12 2v6"/>
+                        <circle cx="12" cy="22" r="2"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1>Protocol Generator</h1>
+                    <p class="logo-subtitle">실험 프로토콜 자동 생성기</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-ghost" onclick="resetToDefaults()" title="기본 프로토콜로 초기화">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                    초기화
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Step 1: Project Info -->
+        <section class="section" id="section-info">
+            <div class="section-header">
+                <span class="step-badge">STEP 1</span>
+                <h2>기본 정보 입력</h2>
+                <p class="section-desc">실험 프로토콜에 포함될 기본 정보를 입력해주세요.</p>
+            </div>
+            <div class="info-grid">
+                <div class="input-group">
+                    <label for="input-experimenter">실험자</label>
+                    <input type="text" id="input-experimenter" placeholder="이름을 입력하세요">
+                </div>
+                <div class="input-group">
+                    <label for="input-date">실험 날짜</label>
+                    <input type="date" id="input-date">
+                </div>
+                <div class="input-group">
+                    <label for="input-project">프로젝트명</label>
+                    <input type="text" id="input-project" placeholder="프로젝트명 (선택사항)">
+                </div>
+                <div class="input-group">
+                    <label for="input-lab">실험실</label>
+                    <input type="text" id="input-lab" placeholder="소속 실험실 (선택사항)">
+                </div>
+            </div>
+            <div class="input-group input-group-full" style="margin-top: 16px;">
+                <label for="input-purpose">실험 목적</label>
+                <textarea id="input-purpose" rows="3" placeholder="오늘 실험의 목적을 기재하세요 (예: HeLa 세포에서 p53 knockdown 후 apoptosis marker 발현 변화 확인)"></textarea>
+            </div>
+        </section>
+
+        <!-- Step 2: Protocol Selection -->
+        <section class="section" id="section-protocols">
+            <div class="section-header">
+                <div class="section-header-row">
+                    <div>
+                        <span class="step-badge">STEP 2</span>
+                        <h2>프로토콜 선택</h2>
+                        <p class="section-desc">생성할 프로토콜을 선택하세요. 여러 개를 동시에 선택할 수 있습니다.</p>
+                    </div>
+                    <button class="btn btn-accent" onclick="openEditor()" id="btn-add-protocol">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        새 프로토콜 추가
+                    </button>
+                </div>
+            </div>
+
+            <!-- Category Filter -->
+            <div class="category-filter">
+                <button class="filter-btn active" data-category="all">
+                    <span class="filter-icon">🔬</span> 전체
+                </button>
+                <button class="filter-btn" data-category="protein">
+                    <span class="filter-icon">🧫</span> 단백질
+                </button>
+                <button class="filter-btn" data-category="nucleic">
+                    <span class="filter-icon">🧬</span> 핵산
+                </button>
+                <button class="filter-btn" data-category="cell">
+                    <span class="filter-icon">🦠</span> 세포
+                </button>
+                <button class="filter-btn" data-category="imaging">
+                    <span class="filter-icon">🔍</span> 이미징
+                </button>
+                <button class="filter-btn" data-category="micro">
+                    <span class="filter-icon">🧪</span> 미생물
+                </button>
+            </div>
+
+            <!-- Protocol Cards Grid -->
+            <div class="protocol-grid" id="protocol-grid">
+                <!-- Cards dynamically generated -->
+            </div>
+        </section>
+
+        <!-- Step 3: Preview & Download -->
+        <section class="section" id="section-preview">
+            <div class="section-header">
+                <span class="step-badge">STEP 3</span>
+                <h2>미리보기 & 다운로드</h2>
+                <p class="section-desc">선택된 프로토콜을 미리보기하고 Word 문서로 다운로드하세요.</p>
+            </div>
+
+            <!-- Selected protocols summary -->
+            <div class="selected-summary" id="selected-summary">
+                <div class="empty-state">
+                    <div class="empty-icon">📋</div>
+                    <p>프로토콜을 선택해주세요</p>
+                    <span class="empty-hint">위에서 원하는 프로토콜 카드를 클릭하세요</span>
+                </div>
+            </div>
+
+            <!-- Preview Panel -->
+            <div class="preview-panel" id="preview-panel" style="display: none;">
+                <div class="preview-toolbar">
+                    <h3>📄 문서 미리보기</h3>
+                    <button class="btn btn-secondary" id="btn-toggle-preview" onclick="togglePreview()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        미리보기 접기
+                    </button>
+                </div>
+                <div class="preview-content" id="preview-content"></div>
+            </div>
+
+            <!-- Download Button -->
+            <div class="download-area" id="download-area" style="display: none;">
+                <button class="btn btn-primary btn-download" id="btn-download" onclick="downloadDocx()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Word 문서 다운로드 (.docx)
+                </button>
+                <p class="download-hint">빈칸에 세부 용량을 직접 기입하여 사용하세요</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Protocol Editor Modal -->
+    <div class="modal-overlay" id="editor-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="editor-title">새 프로토콜 추가</h2>
+                <button class="modal-close" onclick="closeEditor()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="protocol-form" onsubmit="saveProtocol(event)">
+                    <!-- Basic Info -->
+                    <fieldset class="editor-fieldset">
+                        <legend>기본 정보</legend>
+                        <div class="editor-row">
+                            <div class="input-group">
+                                <label for="ed-name">프로토콜 이름 *</label>
+                                <input type="text" id="ed-name" required placeholder="예: 웨스턴 블롯">
+                            </div>
+                            <div class="input-group">
+                                <label for="ed-name-en">영문 이름</label>
+                                <input type="text" id="ed-name-en" placeholder="예: Western Blot">
+                            </div>
+                        </div>
+                        <div class="editor-row">
+                            <div class="input-group">
+                                <label for="ed-category">카테고리 *</label>
+                                <select id="ed-category" required>
+                                    <option value="protein">🧫 단백질 분석</option>
+                                    <option value="nucleic">🧬 핵산 분석</option>
+                                    <option value="cell">🦠 세포 실험</option>
+                                    <option value="imaging">🔍 이미징</option>
+                                    <option value="micro">🧪 미생물</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="ed-icon">아이콘</label>
+                                <div class="icon-picker">
+                                    <input type="text" id="ed-icon" value="🧪" maxlength="2" class="icon-input">
+                                    <div class="icon-suggestions">
+                                        <span onclick="pickIcon('🧪')">🧪</span>
+                                        <span onclick="pickIcon('🧫')">🧫</span>
+                                        <span onclick="pickIcon('🧬')">🧬</span>
+                                        <span onclick="pickIcon('🔬')">🔬</span>
+                                        <span onclick="pickIcon('💉')">💉</span>
+                                        <span onclick="pickIcon('📊')">📊</span>
+                                        <span onclick="pickIcon('🔍')">🔍</span>
+                                        <span onclick="pickIcon('💧')">💧</span>
+                                        <span onclick="pickIcon('🎯')">🎯</span>
+                                        <span onclick="pickIcon('💜')">💜</span>
+                                        <span onclick="pickIcon('📐')">📐</span>
+                                        <span onclick="pickIcon('📏')">📏</span>
+                                        <span onclick="pickIcon('🔄')">🔄</span>
+                                        <span onclick="pickIcon('🦠')">🦠</span>
+                                        <span onclick="pickIcon('⚗️')">⚗️</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="ed-description">간단 설명</label>
+                            <input type="text" id="ed-description" placeholder="예: 특정 단백질의 발현량을 확인하는 면역블롯 기법">
+                        </div>
+                        <div class="input-group">
+                            <label for="ed-purpose">프로토콜 목적</label>
+                            <textarea id="ed-purpose" rows="2" placeholder="프로토콜의 목적을 기술하세요"></textarea>
+                        </div>
+                    </fieldset>
+
+                    <!-- Materials -->
+                    <fieldset class="editor-fieldset">
+                        <legend>
+                            시약 및 재료
+                            <button type="button" class="btn-inline-add" onclick="addMaterialRow()">+ 추가</button>
+                        </legend>
+                        <div id="ed-materials">
+                            <!-- Dynamic rows -->
+                        </div>
+                    </fieldset>
+
+                    <!-- Procedure Sections -->
+                    <fieldset class="editor-fieldset">
+                        <legend>
+                            실험 절차
+                            <button type="button" class="btn-inline-add" onclick="addSection()">+ 섹션 추가</button>
+                        </legend>
+                        <div id="ed-sections">
+                            <!-- Dynamic sections -->
+                        </div>
+                    </fieldset>
+
+                    <!-- Notes -->
+                    <fieldset class="editor-fieldset">
+                        <legend>
+                            주의사항 / Tips
+                            <button type="button" class="btn-inline-add" onclick="addNote()">+ 추가</button>
+                        </legend>
+                        <div id="ed-notes">
+                            <!-- Dynamic notes -->
+                        </div>
+                    </fieldset>
+
+                    <div class="editor-tip">
+                        💡 <strong>빈칸 표시법:</strong> 용량을 비워두고 싶은 곳에 <code>______</code> (밑줄 6개 이상)을 입력하면 Word 문서에서 빈칸으로 표시됩니다.
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeEditor()">취소</button>
+                <button class="btn btn-primary" onclick="saveProtocol(event)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1-2 2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    저장
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirm Modal -->
+    <div class="modal-overlay modal-small-overlay" id="delete-modal">
+        <div class="modal modal-small">
+            <div class="modal-header">
+                <h2>프로토콜 삭제</h2>
+                <button class="modal-close" onclick="closeDeleteModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="delete-confirm-text">
+                    <span class="delete-icon">🗑️</span>
+                    <strong id="delete-protocol-name"></strong> 프로토콜을 삭제하시겠습니까?
+                </p>
+                <p class="delete-hint">삭제 후 복구할 수 없습니다. (초기화 버튼으로 기본 프로토콜은 복원 가능)</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">취소</button>
+                <button class="btn btn-danger" id="btn-confirm-delete" onclick="confirmDelete()">삭제</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Lab Protocol Generator &copy; 2026 | 프로토콜은 참고용이며, 실험실 SOP에 맞게 수정하여 사용하세요.</p>
+    </footer>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast">
+        <span class="toast-icon">✅</span>
+        <span class="toast-message" id="toast-message"></span>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+    <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    <script src="protocols.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
