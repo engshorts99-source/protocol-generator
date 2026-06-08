@@ -15,7 +15,7 @@ const state = {
     protocolToDelete: null,
 };
 
-const BLANK = '____________';
+
 
 // ========================================
 // Initialization
